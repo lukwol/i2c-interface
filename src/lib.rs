@@ -1,3 +1,7 @@
+//! Generic I2C interface
+
+#![no_std]
+
 use embedded_hal as hal;
 
 use crate::hal::blocking::i2c;
