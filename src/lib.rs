@@ -2,11 +2,12 @@
 
 #![no_std]
 
-use embedded_hal as hal;
-
-use crate::hal::blocking::i2c;
 use core::{mem, ops::Add};
+use embedded_hal as hal;
 use generic_array::{typenum::bit::B1, typenum::operator_aliases::Add1, ArrayLength, GenericArray};
+
+pub use crate::hal::blocking::i2c;
+pub use generic_array;
 
 #[derive(Debug)]
 pub struct I2cInterface<I2C> {
