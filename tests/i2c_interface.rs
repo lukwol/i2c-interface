@@ -21,14 +21,37 @@ mod i2c_interface {
             address: device_address,
             i2c: MockI2C::new(payload),
         };
+
         let read: GenericArray<u8, U2> = interface.read_register(register_address).unwrap();
         let mock_i2c = interface.i2c;
 
-        assert_eq!(read, payload);
         assert_eq!(mock_i2c.address_written, Some(device_address));
         assert_eq!(
             mock_i2c.bytes_written,
             Vec::<u8, U64>::from_slice(&[register_address]).unwrap()
         );
+        assert_eq!(read, payload);
+    }
+
+    #[test]
+    fn writing_register() {
+        let device_address = 22;
+        let register_address = 33;
+        let payload = arr![u8; 142, 143];
+
+        let mut interface = I2cInterface {
+            address: device_address,
+            i2c: MockI2C::new(payload),
+        };
+
+        interface.write_register(register_address, payload).unwrap();
+        let mock_i2c = interface.i2c;
+
+        assert_eq!(mock_i2c.address_written, Some(device_address));
+        assert_eq!(mock_i2c.bytes_written, {
+            let mut vec = Vec::<u8, U64>::from_slice(&[register_address]).unwrap();
+            vec.extend_from_slice(payload.as_slice()).unwrap();
+            vec
+        });
     }
 }
