@@ -1,4 +1,76 @@
 //! Generic I2C interface
+//!
+//! # Example
+//!
+//! ```
+//! use generic_array::{GenericArray, arr, typenum::consts::U2};
+//! use i2c_interface::I2cInterface;
+//! use embedded_hal::blocking::i2c;
+//!
+//! # struct MockRegister {
+//! #     address: u8,
+//! #     value: [u8; 2],
+//! # }
+//! #
+//! # struct MockI2C {
+//! #     register: MockRegister,
+//! # }
+//! #
+//! # impl MockI2C {
+//! #     fn new() -> Self {
+//! #         MockI2C {
+//! #             register: MockRegister {
+//! #                 address: 0,
+//! #                 value: [0; 2],
+//! #             },
+//! #         }
+//! #     }
+//! # }
+//! #
+//! # impl i2c::WriteRead for MockI2C {
+//! #     type Error = ();
+//! #
+//! #     fn write_read(
+//! #         &mut self,
+//! #         address: u8,
+//! #         bytes: &[u8],
+//! #         buffer: &mut [u8],
+//! #     ) -> Result<(), Self::Error> {
+//! #         if self.register.address == bytes[0] {
+//! #             for (i, item) in self.register.value.iter().enumerate() {
+//! #                 buffer[i] = *item;
+//! #             }
+//! #         }
+//! #         Ok(())
+//! #     }
+//! # }
+//! #
+//! # impl i2c::Write for MockI2C {
+//! #     type Error = ();
+//! #
+//! #     fn write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Self::Error> {
+//! #         self.register.address = bytes[0];
+//! #         for (i, item) in self.register.value.iter_mut().enumerate() {
+//! #             *item = bytes[i + 1];
+//! #         }
+//! #         Ok(())
+//! #     }
+//! # }
+//! #
+//! let device_address = 0x01;
+//! let register = 0x02;
+//! let value = arr![u8; 0x03, 0x04];
+//!
+//! # let mock_i2c = MockI2C::new();
+//! # let mut i2c_interface = I2cInterface {
+//! #     address: device_address,
+//! #     i2c: mock_i2c,
+//! # };
+//! i2c_interface.write_register(register, value).unwrap();
+//! let reading: GenericArray<u8, U2> = i2c_interface.read_register(register).unwrap();
+//!
+//! assert_eq!(reading, value);
+//! ```
 
 #![no_std]
 
@@ -10,6 +82,7 @@ pub use crate::hal::blocking::i2c;
 pub use generic_array;
 
 #[derive(Debug)]
+/// Describes I2C interface
 pub struct I2cInterface<I2C> {
     /// Slave device I2C
     pub i2c: I2C,

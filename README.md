@@ -1,5 +1,5 @@
 # i2c-interface
-Generic I2C interface
+Generic I2C interface for easy reading and writing to registers.
 
 ## License
 
