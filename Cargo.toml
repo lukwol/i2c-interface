@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 embedded-hal = "0.2.3"
 generic-array = "0.13.2"
+
+[dev-dependencies]
+heapless = "0.5.5"
