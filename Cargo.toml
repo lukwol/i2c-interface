@@ -9,4 +9,4 @@ description = "Generic I2C interface for easy reading and writing to registers."
 
 [dependencies]
 embedded-hal = "0.2.3"
-generic-array = "0.13.2"
+generic-array = "0.14.1"

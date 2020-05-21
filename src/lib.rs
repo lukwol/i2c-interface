@@ -74,6 +74,8 @@
 
 #![no_std]
 
+pub use generic_array;
+
 use crate::hal::blocking::i2c;
 use core::{mem, ops::Add};
 use embedded_hal as hal;
